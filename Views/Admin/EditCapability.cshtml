@@ -1,0 +1,66 @@
+@model ServiceCatalog.Web.Models.Capability
+
+@{
+    ViewData["Title"] = "Edit Capability";
+}
+
+<section class="hero-section">
+    <div class="container">
+    <h1 class="hero-title">Edit Capability</h1>
+   <p class="hero-subtitle">Update capability details</p>
+    </div>
+</section>
+
+<div class="container my-5 page-transition" style="padding-bottom: 120px;">
+    <div class="row justify-content-center">
+<div class="col-md-8">
+   <div class="card border-0 shadow-sm admin-card">
+     <div class="card-header admin-card-header" style="background: linear-gradient(135deg, var(--papillon) 0%, #9d7bc0 100%);">
+       <h5 class="mb-0">?? Edit Capability Details</h5>
+   </div>
+          <div class="card-body p-4">
+         <form asp-action="EditCapability" method="post">
+   @Html.AntiForgeryToken()
+      <input type="hidden" asp-for="Id" />
+     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+     <div class="mb-3">
+ <label asp-for="Name" class="form-label">Capability Name *</label>
+ <input asp-for="Name" class="form-control" required />
+          <span asp-validation-for="Name" class="text-danger"></span>
+ </div>
+
+  <div class="mb-3">
+         <label asp-for="Description" class="form-label">Description *</label>
+   <textarea asp-for="Description" class="form-control" rows="3" required></textarea>
+   <span asp-validation-for="Description" class="text-danger"></span>
+   </div>
+
+        <div class="row">
+      <div class="col-md-6 mb-3">
+    <label asp-for="Order" class="form-label">Display Order *</label>
+     <input asp-for="Order" type="number" class="form-control" required />
+     <span asp-validation-for="Order" class="text-danger"></span>
+   </div>
+
+ <div class="col-md-6 mb-3">
+<label asp-for="ColorHex" class="form-label">Color (Hex) *</label>
+ <input asp-for="ColorHex" type="color" class="form-control form-control-color" required style="height: 50px;" />
+          <span asp-validation-for="ColorHex" class="text-danger"></span>
+  </div>
+    </div>
+
+   <div class="d-flex justify-content-between" style="margin-bottom: 40px;">
+  <a href="@Url.Action("Capabilities", "Admin")" class="btn btn-outline-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, var(--papillon) 0%, #9d7bc0 100%); border: none;">Update Capability</button>
+   </div>
+       </form>
+     </div>
+   </div>
+     </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

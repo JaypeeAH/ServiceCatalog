@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - Cardinal Health Service Catalog</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ServiceCatalog.Web.styles.css" asp-append-version="true" />
+  
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+ <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow sticky-top">
+  <div class="container-fluid">
+ <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+<img src="~/Chip Logo.png" alt="Cardinal Health" style="height: 40px; width: auto; display: inline-block; vertical-align: middle;" />
+      </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+       aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+ </button>
+   <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+  <ul class="navbar-nav flex-grow-1">
+         <li class="nav-item">
+       <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
+<rect x="3" y="3" width="7" height="7"></rect>
+   <rect x="14" y="3" width="7" height="7"></rect>
+     <rect x="14" y="14" width="7" height="7"></rect>
+   <rect x="3" y="14" width="7" height="7"></rect>
+    </svg>
+ Service Catalog
+     </a>
+</li>
+ <li class="nav-item">
+ <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
+ <circle cx="12" cy="12" r="10"></circle>
+  <line x1="12" y1="16" x2="12" y2="12"></line>
+  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+</svg>
+About
+     </a>
+     </li>
+ <li class="nav-item">
+   <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Index">
+   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
+     <circle cx="12" cy="12" r="3"></circle>
+  <path d="M12 1v6m0 6v6"></path>
+<path d="m4.93 4.93 4.24 4.24m5.66 5.66 4.24 4.24"></path>
+ <path d="m19.07 4.93-4.24 4.24m-5.66 5.66-4.24 4.24"></path>
+</svg>
+  Admin
+     </a>
+ </li>
+ </ul>
+ </div>
+ </div>
+    </nav>
+ </header>
+    
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <!-- Include Modals -->
+    @await Html.PartialAsync("_Modals")
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+    
+    @* TempData Modal Handling - MUST come after modal functions are defined *@
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            console.log('TempData Success detected:', '@Html.Raw(TempData["Success"])');
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOMContentLoaded - attempting to show success modal');
+                if (typeof showSuccessModal === 'function') {
+                    showSuccessModal('@Html.Raw(TempData["Success"])');
+                } else {
+                    console.error('showSuccessModal function not defined!');
+                }
+            });
+        </script>
+    }
+    
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            console.log('TempData Error detected:', '@Html.Raw(TempData["Error"])');
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOMContentLoaded - attempting to show error modal');
+                if (typeof showErrorModal === 'function') {
+                    showErrorModal('@Html.Raw(TempData["Error"])');
+                } else {
+                    console.error('showErrorModal function not defined!');
+                }
+            });
+        </script>
+    }
+</body>
+</html>

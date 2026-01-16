@@ -1,0 +1,212 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    var stats = ViewBag.Stats;
+}
+
+<!-- Modern Admin Hero Section with Wormhole -->
+<section class="modern-hero-section hero-bg-dashboard" style="min-height: 35vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+    <!-- Wormhole Canvas -->
+    <canvas id="wormhole-canvas"></canvas>
+    
+    <div class="container text-center" style="position: relative; z-index: 10;">
+     <h1 class="hero-title" style="color: white; font-size: 2.5rem; font-weight: 800; margin-bottom: 0.8rem; text-shadow: 0 4px 20px rgba(0,0,0,0.3);">⚙️ Admin Dashboard</h1>
+     <p class="hero-subtitle" style="color: rgba(255,255,255,0.95); font-size: 1.2rem; font-weight: 300;">Service Catalog Management</p>
+    </div>
+</section>
+
+<div class="container my-5" style="margin-bottom: 120px;">
+  @if (TempData["Success"] != null)
+    {
+ <div class="alert alert-success alert-dismissible fade show" role="alert" style="animation: slideInRight 0.6s ease-out; border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+      <strong>✅ Success!</strong> @TempData["Success"]
+     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+ </div>
+    }
+
+    <!-- Statistics Cards with Modern Design -->
+    <div class="row mb-5" style="margin-top: -50px;">
+        <div class="col-md-3 mb-4">
+   <div class="admin-stat-card-modern" style="background: linear-gradient(135deg, #EC5A62 0%, #f76b73 100%); animation: fadeInUp 0.6s ease-out 0.1s both;">
+     <div class="stat-icon" style="font-size: 3rem; margin-bottom: 1rem;">🛠️</div>
+    <h3 class="stat-number" style="font-size: 3rem; font-weight: 800; color: white; margin-bottom: 0.5rem;">@stats.TotalServices</h3>
+  <p class="stat-label" style="color: rgba(255,255,255,0.9); font-size: 1.1rem; margin: 0;">Total Services</p>
+        </div>
+        </div>
+    <div class="col-md-3 mb-4">
+       <div class="admin-stat-card-modern" style="background: linear-gradient(135deg, #7BB1E8 0%, #6a9fd4 100%); animation: fadeInUp 0.6s ease-out 0.2s both;">
+   <div class="stat-icon" style="font-size: 3rem; margin-bottom: 1rem;">⚙️</div>
+    <h3 class="stat-number" style="font-size: 3rem, font-weight: 800, color: white, margin-bottom: 0.5rem;">@stats.TotalProcesses</h3>
+           <p class="stat-label" style="color: rgba(255,255,255,0.9); font-size: 1.1rem; margin: 0;">Total Processes</p>
+    </div>
+        </div>
+ <div class="col-md-3 mb-4">
+  <div class="admin-stat-card-modern" style="background: linear-gradient(135deg, #69D2B7 0%, #5bbfa7 100%); animation: fadeInUp 0.6s ease-out 0.3s both;">
+    <div class="stat-icon" style="font-size: 3rem; margin-bottom: 1rem;">📍</div>
+<h3 class="stat-number" style="font-size: 3rem; font-weight: 800; color: white; margin-bottom: 0.5rem;">@stats.TotalLocations</h3>
+   <p class="stat-label" style="color: rgba(255,255,255,0.9); font-size: 1.1rem; margin: 0;">Locations</p>
+</div>
+  </div>
+        <div class="col-md-3 mb-4">
+     <div class="admin-stat-card-modern" style="background: linear-gradient(135deg, #B390D4 0%, #9d7bc0 100%); animation: fadeInUp 0.6s ease-out 0.4s both;">
+     <div class="stat-icon" style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
+     <h3 class="stat-number" style="font-size: 3rem; font-weight: 800; color: white; margin-bottom: 0.5rem;">@stats.TotalCategories</h3>
+<p class="stat-label" style="color: rgba(255,255,255,0.9); font-size: 1.1rem; margin: 0;">Categories</p>
+  </div>
+ </div>
+    </div>
+
+    <!-- Section Title -->
+<div class="text-center mb-5" style="animation: fadeIn 0.8s ease-out 0.5s both;">
+        <h2 style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, var(--cardinal-red), var(--flamingo)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">Quick Actions</h2>
+        <p style="color: #6c757d; font-size: 1.1rem;">Manage your service catalog efficiently</p>
+</div>
+
+    <!-- Management Cards - First Row -->
+  <div class="row mb-4">
+   <!-- 1. Capability Management -->
+        <div class="col-md-4 mb-4">
+       <div class="admin-action-card" data-color="#B390D4" style="animation: fadeInUp 0.6s ease-out 0.6s both;">
+     <div class="card-icon-wrapper" style="background: linear-gradient(135deg, #B390D4 0%, #9d7bc0 100%);">
+          <span style="font-size: 2.5rem;">🎨</span>
+     </div>
+       <h5 class="card-title-modern">Capability Management</h5>
+  <p class="card-description">Manage capability categories and their properties</p>
+ <div class="button-group">
+      <a href="@Url.Action("Capabilities", "Admin")" class="btn-modern btn-modern-primary">
+  <span>View All</span>
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+ <path d="M5 12h14M12 5l7 7-7 7"/>
+  </svg>
+            </a>
+ <a href="@Url.Action("CreateCapability", "Admin")" class="btn-modern btn-modern-secondary">
+      <span>Add New</span>
+     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+         <path d="M12 5v14M5 12h14"/>
+  </svg>
+      </a>
+ </div>
+        </div>
+   </div>
+
+  <!-- 2. Service Management -->
+        <div class="col-md-4 mb-4">
+   <div class="admin-action-card" data-color="#EC5A62" style="animation: fadeInUp 0.6s ease-out 0.7s both;">
+     <div class="card-icon-wrapper" style="background: linear-gradient(135deg, #EC5A62 0%, #d94855 100%);">
+        <span style="font-size: 2.5rem;">🛠️</span>
+            </div>
+      <h5 class="card-title-modern">Service Management</h5>
+       <p class="card-description">Manage services, descriptions, and categorization</p>
+      <div class="button-group">
+           <a href="@Url.Action("Services", "Admin")" class="btn-modern btn-modern-primary">
+        <span>View All</span>
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+   <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+    </a>
+     <a href="@Url.Action("CreateService", "Admin")" class="btn-modern btn-modern-secondary">
+        <span>Add New</span>
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+   <path d="M12 5v14M5 12h14"/>
+   </svg>
+           </a>
+         </div>
+     </div>
+ </div>
+
+  <!-- 3. Process Management -->
+   <div class="col-md-4 mb-4">
+    <div class="admin-action-card" data-color="#7BB1E8" style="animation: fadeInUp 0.6s ease-out 0.8s both;">
+<div class="card-icon-wrapper" style="background: linear-gradient(135deg, #7BB1E8 0%, #6a9fd4 100%);">
+    <span style="font-size: 2.5rem;">⚙️</span>
+  </div>
+     <h5 class="card-title-modern">Process Management</h5>
+  <p class="card-description">Manage processes and sub-services for each service</p>
+  <div class="button-group">
+        <a href="@Url.Action("Processes", "Admin")" class="btn-modern btn-modern-primary">
+  <span>View All</span>
+           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+       <path d="M5 12h14M12 5l7 7-7 7"/>
+     </svg>
+           </a>
+       <a href="@Url.Action("CreateProcess", "Admin")" class="btn-modern btn-modern-secondary">
+ <span>Add New</span>
+     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12h14"/>
+        </svg>
+          </a>
+        </div>
+ </div>
+        </div>
+    </div>
+
+  <!-- Management Cards - Second Row -->
+ <div class="row">
+        <!-- 4. Applicability Management -->
+        <div class="col-md-6 mb-4">
+<div class="admin-action-card" data-color="#42B3D5" style="animation: fadeInUp 0.6s ease-out 0.9s both;">
+   <div class="card-icon-wrapper" style="background: linear-gradient(135deg, #42B3D5 0%, #3a9fc1 100%);">
+      <span style="font-size: 2.5rem;">✅</span>
+</div>
+     <h5 class="card-title-modern">Applicability Management</h5>
+   <p class="card-description">Manage division applicability for all processes</p>
+   <div class="button-group">
+  <a href="@Url.Action("Applicabilities", "Admin")" class="btn-modern btn-modern-primary">
+         <span>View All</span>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M5 12h14M12 5l7 7-7 7"/>
+         </svg>
+</a>
+        </div>
+  <p class="text-muted small mt-3 mb-0">✨ Auto-created with processes</p>
+            </div>
+        </div>
+
+<!-- 5. Location Management -->
+        <div class="col-md-6 mb-4">
+        <div class="admin-action-card" data-color="#69D2B7" style="animation: fadeInUp 0.6s ease-out 1s both;">
+     <div class="card-icon-wrapper" style="background: linear-gradient(135deg, #69D2B7 0%, #5bbfa7 100%);">
+      <span style="font-size: 2.5rem;">📍</span>
+      </div>
+        <h5 class="card-title-modern">Location Management</h5>
+              <p class="card-description">Manage global office locations and employee counts</p>
+      <div class="button-group">
+    <a href="@Url.Action("Locations", "Admin")" class="btn-modern btn-modern-primary">
+     <span>View All</span>
+   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+     <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+  </a>
+     <a href="@Url.Action("CreateLocation", "Admin")" class="btn-modern btn-modern-secondary">
+        <span>Add New</span>
+   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M12 5v14M5 12h14"/>
+      </svg>
+   </a>
+        </div>
+        </div>
+ </div>
+    </div>
+
+    <!-- Security Note -->
+<div class="alert-modern" style="animation: fadeIn 0.8s ease-out 1.1s both;">
+        <div class="alert-icon">🔒</div>
+    <div class="alert-content">
+ <h5 class="alert-heading">Security Note</h5>
+            <p class="mb-0">This is a basic admin interface. In production, add authentication and authorization using ASP.NET Core Identity. Add the <code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 4px;">[Authorize(Roles = "Admin")]</code> attribute to the AdminController to secure these pages.</p>
+  </div>
+    </div>
+
+  <!-- Back to Catalog Button -->
+    <div class="text-center mt-5" style="animation: fadeIn 0.8s ease-out 1.2s both;">
+   <a href="@Url.Action("Index", "Home")" class="btn-back-home">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+  <span>Back to Service Catalog</span>
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+<script src="~/js/wormhole.js"></script>
+}

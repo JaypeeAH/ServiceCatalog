@@ -1,0 +1,263 @@
+@model ServiceCatalog.Web.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Service Catalog";
+}
+
+<!-- Scroll Progress Bar (TOP OF PAGE) -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Modern Hero Section - Google Antigravity Style -->
+<section class="modern-hero-section" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f8f9fa;">
+    <div class="container text-center" style="position: relative; z-index: 100;">
+        <!-- Cardinal Health Logo Image -->
+     <div class="hero-brand-container">
+            <img src="~/Chip Logo.png" alt="Cardinal Health" class="hero-brand-logo" style="max-width: 250px; width: 60%;" />
+        </div>
+    
+  <!-- Main Heading -->
+      <h2 class="modern-hero-title" style="font-size: 4rem; font-weight: 700; color: #1a1a1a; margin: 40px 0 20px;">Experience Excellence</h2>
+        <p class="modern-hero-subtitle" style="font-size: 1.6rem; color: #6c757d; margin-bottom: 50px;">with Global Business & Finance Services</p>
+    
+        <!-- CTA Buttons -->
+        <div class="hero-actions" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+            <a href="#services" class="btn-hero-primary smooth-scroll" style="background: linear-gradient(135deg, #EC5A62 0%, #d94855 100%); color: white; padding: 16px 40px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; text-decoration: none; box-shadow: 0 4px 20px rgba(236, 90, 98, 0.3);">Explore Services</a>
+            <a href="#locations" class="btn-hero-secondary smooth-scroll" style="background: transparent; color: #EC5A62; padding: 16px 40px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; text-decoration: none; border: 2px solid #EC5A62;">Our Locations</a>
+        </div>
+    </div>
+</section>
+
+<!-- What We Do Section -->
+<div class="container my-5" id="services" style="padding-top: 60px;">
+    <div class="section-header">
+        <h2>WHAT WE DO:</h2>
+        <span class="section-badge">@Model.Services.Count Services</span>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <div class="category-section">
+        <div class="container">
+            <div class="category-pills">
+         <a href="javascript:void(0)" 
+        onclick="filterServicesAjax('All')"
+          class="category-pill @(Model.SelectedCategory == "All" ? "active" : "")"
+data-category="all">
+   All Services
+ </a>
+     @foreach (var capability in Model.Capabilities)
+     {
+        <a href="javascript:void(0)" 
+      onclick="filterServicesAjax('@capability.Name')"
+  class="category-pill @(Model.SelectedCategory == capability.Name ? "active" : "")"
+     data-category="@capability.Name">
+        @capability.Name
+          </a>
+  }
+    </div>
+        </div>
+    </div>
+
+    <!-- Services Grid -->
+    <div id="services-container">
+        @if (Model.Services.Any())
+        {
+       <div class="services-grid">
+                @foreach (var service in Model.Services)
+         {
+              <div class="service-card" style="opacity: 1;">
+             <div class="service-card-header">
+       <h3 class="service-card-title">@service.Name</h3>
+         <div class="service-card-category">@service.Capability.Name</div>
+         </div>
+     <div class="service-card-body">
+   <p class="service-card-description">@service.Description</p>
+   
+        @if (service.Capability.Name == "Customer Service" && service.Processes.Any())
+                  {
+        <div class="applicability-indicators">
+  @{
+      var applicableDivisions = service.Processes
+     .SelectMany(p => p.Applicabilities)
+  .Where(a => a.IsApplicable)
+     .Select(a => a.Division)
+               .Distinct()
+    .ToList();
+      }
+            @foreach (var division in applicableDivisions)
+           {
+       <span class="division-badge @division.ToLower()">
+         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 3px;">
+<polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              @division
+            </span>
+            }
+   </div>
+         }
+ 
+            @if (service.Processes.Any())
+{
+       <div class="mt-4" style="display: flex; align-items: center; gap: 0.5rem;">
+             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--cardinal-red);">
+      <path d="M9 11l3 3L22 4"></path>
+             <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+       <small class="text-muted">
+              <strong>@service.Processes.Count</strong> processes/sub-services available
+        </small>
+           </div>
+ }
+        </div>
+          <div class="service-card-footer">
+ <a href="@Url.Action("ServiceDetail", new { id = service.Id })" class="service-details-btn">
+          View Details ?
+           </a>
+        </div>
+         </div>
+        }
+ </div>
+        }
+        else
+        {
+       <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">No services found</h4>
+ <p class="mb-0">No services match the selected filters.</p>
+            </div>
+  }
+    </div>
+</div>
+
+<!-- Where We Are Section -->
+<section class="map-section" id="locations" style="padding: 60px 0;">
+  <div class="container">
+        <div class="section-header">
+            <h2>WHERE WE ARE:</h2>
+  <span class="section-badge">@Model.Locations.Sum(l => l.EmployeeCount)+ Employees</span>
+        </div>
+
+ <div class="locations-grid">
+ @foreach (var location in Model.Locations)
+        {
+      var countryCode = location.Country.ToLower() switch
+          {
+       "ireland" => "ie",
+ "united states" => "us",
+  "usa" => "us",
+                "united kingdom" => "gb",
+       "uk" => "gb",
+    "india" => "in",
+          "china" => "cn",
+   "singapore" => "sg",
+        "philippines" => "ph",
+  _ => ""
+           };
+       
+           <div class="fancy-location-card" style="opacity: 1;">
+             @if (!string.IsNullOrEmpty(countryCode))
+              {
+             <div class="location-flag-bg" style="background-image: url('https://flagcdn.com/w640/@(countryCode).png');"></div>
+           }
+            
+     <div class="location-card-overlay">
+        <div class="location-pin-icon">
+           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+       </svg>
+           </div>
+            
+   <div class="location-info">
+       <div class="location-name-fancy">@location.Name</div>
+    <div class="location-country-fancy">
+             @if (!string.IsNullOrEmpty(countryCode))
+  {
+      <img src="https://flagcdn.com/24x18/@(countryCode).png" alt="@location.Country flag" class="location-flag-icon" />
+          }
+        @location.Country
+    </div>
+  <div class="location-region-badge">@location.Region</div>
+       <div class="location-employees-fancy">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+   <circle cx="9" cy="7" r="4"></circle>
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    </svg>
+     <strong>@location.EmployeeCount.ToString("N0")</strong> Employees
+      </div>
+ </div>
+                </div>
+   </div>
+            }
+      </div>
+    </div>
+</section>
+
+@section Scripts {
+ <script>
+        // Scroll Progress Bar
+ window.addEventListener('scroll', () => {
+  const scrollProgress = document.getElementById('scrollProgress');
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+       const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollPercentage = (scrollTop / scrollHeight);
+     scrollProgress.style.transform = `scaleX(${scrollPercentage})`;
+});
+
+  // Smooth scroll for anchor links
+        document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.smooth-scroll').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+     e.preventDefault();
+     const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+              target.scrollIntoView({
+     behavior: 'smooth',
+         block: 'start'
+    });
+           }
+    });
+  });
+ });
+     
+        // AJAX Filter - NO PAGE RELOAD, NO FLICKER!
+    function filterServicesAjax(category) {
+   // Update active pill UI immediately
+            document.querySelectorAll('.category-pill').forEach(pill => {
+    pill.classList.remove('active');
+     if (pill.getAttribute('data-category') === category || 
+         (category === 'All' && pill.getAttribute('data-category') === 'all')) {
+      pill.classList.add('active');
+            }
+          });
+  
+            // Fetch filtered services via AJAX
+            const url = category === 'All' ? 
+        '@Url.Action("Index")' : 
+        '@Url.Action("Index")?category=' + encodeURIComponent(category);
+     
+        // Use fetch API to load the page
+     fetch(url)
+    .then(response => response.text())
+          .then(html => {
+        // Parse the HTML response
+     const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+        
+         // Extract only the services grid content
+  const newServicesContainer = doc.querySelector('#services-container');
+        if (newServicesContainer) {
+ document.getElementById('services-container').innerHTML = newServicesContainer.innerHTML;
+      }
+            
+               // Update URL without reload
+               const newUrl = url;
+              window.history.pushState({category: category}, '', newUrl);
+    })
+      .catch(error => {
+       console.error('Error loading services:', error);
+           // Fallback to regular navigation on error
+window.location.href = url;
+      });
+        }
+    </script>
+}

@@ -1,0 +1,156 @@
+@model ServiceCatalog.Web.Models.Location
+
+@{
+    ViewData["Title"] = "Create Location";
+}
+
+<section class="modern-hero-section hero-bg-locations" style="min-height: 35vh;">
+    <!-- Wormhole Canvas -->
+    <canvas id="wormhole-canvas"></canvas>
+    
+    <div class="container text-center" style="position: relative; z-index: 10;">
+        <h1 class="hero-title" style="color: white; font-size: 2.5rem; font-weight: 800; margin-bottom: 0.8rem; text-shadow: 0 4px 20px rgba(0,0,0,0.3);">?? Create New Location</h1>
+        <p class="hero-subtitle" style="color: rgba(255,255,255,0.95); font-size: 1.2rem; font-weight: 300;">Add a new global office location</p>
+    </div>
+</section>
+
+<div class="container my-5 page-transition" style="padding-bottom: 120px;">
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="crud-form-container" style="animation: fadeInUp 0.6s ease-out;">
+            <div class="crud-form-header" style="background: linear-gradient(135deg, var(--grasshopper), #5bbfa7);">
+                <span style="font-size: 2rem;">??</span>
+                <span>New Location Details</span>
+            </div>
+            <div style="padding: 30px;">
+                    <form asp-action="CreateLocation" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);"></div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-modern">
+                                    <label asp-for="Name" class="form-label-modern">
+                                        Location Name <span style="color: var(--cardinal-red);">*</span>
+                                    </label>
+                                    <input asp-for="Name" class="form-control-modern" placeholder="e.g., Cardinal Health Dublin" required />
+                                    <span asp-validation-for="Name" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group-modern">
+                                    <label asp-for="Country" class="form-label-modern">
+                                        Country <span style="color: var(--cardinal-red);">*</span>
+                                    </label>
+                                    <input asp-for="Country" class="form-control-modern" placeholder="e.g., Ireland" required />
+                                    <span asp-validation-for="Country" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-modern">
+                                    <label asp-for="Region" class="form-label-modern">
+                                        Region <span style="color: var(--cardinal-red);">*</span>
+                                    </label>
+                                    <select asp-for="Region" class="form-control-modern" required style="cursor: pointer;">
+                                        <option value="">-- Select Region --</option>
+                                        <option value="EMEA">EMEA</option>
+                                        <option value="APAC">APAC</option>
+                                        <option value="Americas">Americas</option>
+                                    </select>
+                                    <span asp-validation-for="Region" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group-modern">
+                                    <label asp-for="EmployeeCount" class="form-label-modern">
+                                        Employee Count <span style="color: var(--cardinal-red);">*</span>
+                                    </label>
+                                    <input asp-for="EmployeeCount" type="number" class="form-control-modern" placeholder="e.g., 250" required min="1" />
+                                    <span asp-validation-for="EmployeeCount" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label asp-for="FlagUrl" class="form-label-modern">
+                                Flag URL <span style="color: var(--warm-gray-7); font-size: 0.875rem;">(Optional)</span>
+                            </label>
+                            <input asp-for="FlagUrl" class="form-control-modern" placeholder="https://flagcdn.com/w640/ie.png" />
+                            <span asp-validation-for="FlagUrl" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                            <small style="color: var(--warm-gray-7); font-size: 0.875rem; margin-top: 5px; display: block;">
+                                ?? Leave empty to use country code auto-detection
+                            </small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-modern">
+                                    <label asp-for="Latitude" class="form-label-modern">
+                                        Latitude <span style="color: var(--cardinal-red);">*</span>
+                                    </label>
+                                    <input asp-for="Latitude" type="number" step="0.0001" class="form-control-modern" placeholder="e.g., 53.3498" required />
+                                    <span asp-validation-for="Latitude" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                                    <small style="color: var(--warm-gray-7); font-size: 0.875rem; margin-top: 5px; display: block;">
+                                        ?? Range: -90 to 90
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group-modern">
+                                    <label asp-for="Longitude" class="form-label-modern">
+                                        Longitude <span style="color: var(--cardinal-red);">*</span>
+                                    </label>
+                                    <input asp-for="Longitude" type="number" step="0.0001" class="form-control-modern" placeholder="e.g., -6.2603" required />
+                                    <span asp-validation-for="Longitude" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                                    <small style="color: var(--warm-gray-7); font-size: 0.875rem; margin-top: 5px; display: block;">
+                                        ?? Range: -180 to 180
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, rgba(105, 210, 183, 0.1), rgba(91, 191, 167, 0.1)); padding: 20px; border-radius: 15px; margin: 30px 0; border-left: 4px solid var(--grasshopper);">
+                            <div style="display: flex; align-items: flex-start; gap: 15px;">
+                                <span style="font-size: 2rem;">??</span>
+                                <div>
+                                    <strong style="color: var(--black); display: block; margin-bottom: 8px; font-size: 1.1rem;">Tip</strong>
+                                    <p style="color: var(--black-light); margin: 0; line-height: 1.6;">
+                                        You can find coordinates by searching the location on Google Maps, right-clicking, and selecting "What's here?"
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons-row">
+                            <a href="@Url.Action("Locations", "Admin")" class="btn-modern btn-modern-secondary" style="width: auto; padding: 14px 32px;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                                </svg>
+                                <span>Cancel</span>
+                            </a>
+                            <button type="submit" class="btn-modern btn-modern-primary" style="width: auto; padding: 14px 32px; background: linear-gradient(135deg, var(--grasshopper), #5bbfa7);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 0 1-2 2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                    <polyline points="17 21 17 13 7 13 7 21"/>
+                                    <polyline points="7 3 7 8 15 8"/>
+                                </svg>
+                                <span>Create Location</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script src="~/js/wormhole.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

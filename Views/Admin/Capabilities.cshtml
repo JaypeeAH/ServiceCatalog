@@ -1,0 +1,132 @@
+@model IEnumerable<ServiceCatalog.Web.Models.Capability>
+
+@{
+    ViewData["Title"] = "Manage Capabilities";
+}
+
+<section class="modern-hero-section hero-bg-capabilities" style="min-height: 35vh;">
+    <!-- Wormhole Canvas -->
+    <canvas id="wormhole-canvas"></canvas>
+    
+    <div class="container text-center" style="position: relative; z-index: 10;">
+ <h1 class="hero-title" style="color: white; font-size: 2.5rem; font-weight: 800; margin-bottom: 0.8rem; text-shadow: 0 4px 20px rgba(0,0,0,0.3);">?? Capabilities</h1>
+   <p class="hero-subtitle" style="color: rgba(255,255,255,0.95); font-size: 1.2rem; font-weight: 300;">Manage service capability categories</p>
+    </div>
+</section>
+
+<div class="container my-5 page-transition" style="padding-bottom: 120px;">
+    @if (TempData["Success"] != null)
+    {
+  <div class="alert alert-success alert-dismissible fade show" role="alert" style="animation: slideInRight 0.6s ease-out; border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    <strong>? Success!</strong> @TempData["Success"]
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+@if (TempData["Error"] != null)
+    {
+   <div class="alert alert-danger alert-dismissible fade show" role="alert" style="animation: slideInRight 0.6s ease-out; border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);">
+   <strong>? Error!</strong> @TempData["Error"]
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  }
+
+    <div class="d-flex justify-content-between align-items-center mb-5" style="animation: fadeInUp 0.6s ease-out;">
+ <div>
+    <h2 style="color: var(--black); font-weight: 700; font-size: 2rem; margin-bottom: 0.5rem;">All Capabilities</h2>
+ <p style="color: var(--black-light); margin: 0;">@Model.Count() capability categories for organizing services</p>
+        </div>
+      <a href="@Url.Action("CreateCapability", "Admin")" class="btn-modern btn-modern-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+     <path d="M12 5v14M5 12h14"/>
+       </svg>
+   <span>Add New Capability</span>
+</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+ <div class="alert alert-info" style="border-radius: 20px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px;">
+            <h5 style="font-weight: 700; color: var(--black); margin-bottom: 10px;">No Capabilities Found</h5>
+   <p style="margin: 0; color: var(--black-light);">Get started by adding your first capability.</p>
+        </div>
+    }
+    else
+    {
+        <div class="crud-card-grid" style="animation: fadeInUp 0.6s ease-out 0.2s both;">
+ @foreach (var capability in Model.OrderBy(c => c.Order))
+ {
+        <div class="crud-card">
+   <div class="crud-card-header" style="background: linear-gradient(135deg, @capability.ColorHex 0%, @capability.ColorHex 100%); position: relative; overflow: hidden;">
+       <div style="position: absolute; top: -50%; right: -50%; width: 100%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); animation: rotate 10s linear infinite;"></div>
+        <h5 style="margin: 0; font-size: 1.5rem; font-weight: 700; position: relative; z-index: 1;">@capability.Name</h5>
+   <small style="opacity: 0.9; position: relative; z-index: 1; display: block; margin-top: 5px;">Display Order: @capability.Order</small>
+      </div>
+
+    <div class="crud-card-body">
+        <p style="color: var(--black-light); line-height: 1.6; margin-bottom: 20px; min-height: 60px;">@capability.Description</p>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+       <span class="badge-modern badge-modern-info" style="font-size: 0.9rem;">
+    @capability.Services?.Count() Services
+     </span>
+ <div style="display: flex; align-items: center; gap: 8px;">
+ <span style="color: var(--warm-gray-7); font-size: 0.875rem;">Color:</span>
+           <div style="width: 30px; height: 30px; border-radius: 8px; background: @capability.ColorHex; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
+     </div>
+    </div>
+ </div>
+
+     <div class="crud-card-footer">
+      <div class="d-flex gap-2">
+    <a href="@Url.Action("EditCapability", "Admin", new { id = capability.Id })" class="btn-modern btn-modern-primary" style="flex: 1; padding: 12px;">
+     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          <span>Edit</span>
+ </a>
+         <button type="button" class="btn-modern btn-modern-secondary" style="flex: 1; padding: 12px;" onclick="confirmDelete(@capability.Id, '@capability.Name')">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"></polyline>
+     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+  </svg>
+    <span>Delete</span>
+     </button>
+      </div>
+  </div>
+ </div>
+            }
+      </div>
+    }
+
+    <div class="text-center mt-5" style="animation: fadeIn 0.8s ease-out 0.4s both;">
+      <a href="@Url.Action("Index", "Admin")" class="btn-back-home">
+   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+   </svg>
+      <span>Back to Dashboard</span>
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+<script src="~/js/wormhole.js"></script>
+<script>
+    function confirmDelete(id, name) {
+        if (confirm(`?? Are you sure you want to delete the capability "${name}"?\n\nThis action cannot be undone. All associated services must be reassigned or deleted first.`)) {
+    const form = document.createElement('form');
+ form.method = 'POST';
+  form.action = '@Url.Action("DeleteCapability", "Admin")'.replace('__id__', id) + '/' + id;
+        
+const token = document.createElement('input');
+       token.type = 'hidden';
+    token.name = '__RequestVerificationToken';
+ token.value = '@Html.AntiForgeryToken()'.match(/value="([^"]+)"/)[1];
+     form.appendChild(token);
+   
+   document.body.appendChild(form);
+form.submit();
+ }
+    }
+</script>
+}

@@ -1,0 +1,70 @@
+@model ServiceCatalog.Web.Models.ServiceApplicability
+
+@{
+    ViewData["Title"] = "Edit Applicability";
+}
+
+<section class="hero-section">
+    <div class="container">
+   <h1 class="hero-title">Edit Applicability</h1>
+   <p class="hero-subtitle">Update division applicability</p>
+    </div>
+</section>
+
+<div class="container my-5 page-transition" style="padding-bottom: 120px;">
+    <div class="row justify-content-center">
+    <div class="col-md-8">
+  <div class="card border-0 shadow-sm admin-card">
+ <div class="card-header admin-card-header" style="background: linear-gradient(135deg, var(--robin-egg-blue) 0%, #3a9fc1 100%);">
+       <h5 class="mb-0">? Edit Applicability</h5>
+   </div>
+ <div class="card-body p-4">
+      <form asp-action="EditApplicability" method="post">
+     @Html.AntiForgeryToken()
+  <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ServiceProcessId" />
+         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+ <div class="alert alert-info">
+     <strong>?? Context:</strong><br />
+    Service: <strong>@Model.ServiceProcess?.Service?.Name</strong><br />
+     Process: <strong>@Model.ServiceProcess?.Name</strong>
+  </div>
+
+   <div class="mb-3">
+ <label asp-for="Division" class="form-label">Division</label>
+    <select asp-for="Division" class="form-select" disabled>
+     <option value="Medical">Medical</option>
+   <option value="Pharma">Pharma</option>
+    <option value="AHS">AHS</option>
+      <option value="OFL">OFL</option>
+       </select>
+   <input type="hidden" asp-for="Division" />
+  <small class="form-text text-muted">Division cannot be changed</small>
+  </div>
+
+      <div class="mb-4">
+      <label class="form-label">Is Applicable?</label>
+      <div class="form-check">
+<input asp-for="IsApplicable" class="form-check-input" type="checkbox" />
+     <label asp-for="IsApplicable" class="form-check-label">
+      This process is applicable to @Model.Division division
+     </label>
+     </div>
+<span asp-validation-for="IsApplicable" class="text-danger"></span>
+   </div>
+
+      <div class="d-flex justify-content-between" style="margin-bottom: 40px;">
+<a href="@Url.Action("Applicabilities", "Admin")" class="btn btn-outline-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, var(--robin-egg-blue) 0%, #3a9fc1 100%); border: none;">Update Applicability</button>
+        </div>
+   </form>
+        </div>
+      </div>
+ </div>
+    </div>
+</div>
+
+@section Scripts {
+ @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

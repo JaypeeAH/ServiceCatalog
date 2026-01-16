@@ -1,0 +1,116 @@
+@model ServiceCatalog.Web.Models.ServiceProcess
+
+@{
+    ViewData["Title"] = "Create Process";
+}
+
+<section class="modern-hero-section hero-bg-processes" style="min-height: 35vh;">
+    <!-- Wormhole Canvas -->
+    <canvas id="wormhole-canvas"></canvas>
+    
+    <div class="container text-center" style="position: relative; z-index: 10;">
+        <h1 class="hero-title" style="color: white; font-size: 2.5rem; font-weight: 800; margin-bottom: 0.8rem; text-shadow: 0 4px 20px rgba(0,0,0,0.3);">?? Create New Process</h1>
+        <p class="hero-subtitle" style="color: rgba(255,255,255,0.95); font-size: 1.2rem; font-weight: 300;">Add a new service process with applicabilities</p>
+    </div>
+</section>
+
+<div class="container my-5 page-transition" style="padding-bottom: 120px;">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="crud-form-container" style="animation: fadeInUp 0.6s ease-out;">
+                <div class="crud-form-header" style="background: linear-gradient(135deg, var(--blue-jay), #6a9fd4);">
+                    <span style="font-size: 2rem;">??</span>
+                    <span>Process Details</span>
+                </div>
+
+                <form asp-action="CreateProcess" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);"></div>
+
+                    <div class="form-group-modern">
+                        <label asp-for="ServiceId" class="form-label-modern">
+                            Service <span style="color: var(--cardinal-red);">*</span>
+                        </label>
+                        <select asp-for="ServiceId" class="form-control-modern" required style="cursor: pointer;">
+                            <option value="">-- Select Service --</option>
+                            @foreach (var service in ViewBag.Services as List<ServiceCatalog.Web.Models.Service>)
+                            {
+                                <option value="@service.Id">@service.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ServiceId" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label asp-for="Name" class="form-label-modern">
+                            Process Name <span style="color: var(--cardinal-red);">*</span>
+                        </label>
+                        <input asp-for="Name" class="form-control-modern" placeholder="e.g., Order Processing" required />
+                        <span asp-validation-for="Name" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label asp-for="Description" class="form-label-modern">
+                            Description <span style="color: var(--cardinal-red);">*</span>
+                        </label>
+                        <textarea asp-for="Description" class="form-control-modern" rows="4" placeholder="Describe what this process does..." required style="resize: vertical; min-height: 100px;"></textarea>
+                        <span asp-validation-for="Description" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label asp-for="Category" class="form-label-modern">
+                            Category <span style="color: var(--cardinal-red);">*</span>
+                        </label>
+                        <input asp-for="Category" class="form-control-modern" placeholder="e.g., Order Management" required />
+                        <span asp-validation-for="Category" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label asp-for="Order" class="form-label-modern">
+                            Display Order <span style="color: var(--cardinal-red);">*</span>
+                        </label>
+                        <input asp-for="Order" type="number" class="form-control-modern" placeholder="e.g., 1" required min="1" />
+                        <span asp-validation-for="Order" class="text-danger" style="font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                        <small style="color: var(--warm-gray-7); font-size: 0.875rem; margin-top: 5px; display: block;">
+                            ?? Lower numbers appear first within the service
+                        </small>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, rgba(123, 177, 232, 0.1), rgba(106, 159, 212, 0.1)); padding: 20px; border-radius: 15px; margin: 30px 0; border-left: 4px solid var(--blue-jay);">
+                        <div style="display: flex; align-items: flex-start; gap: 15px;">
+                            <span style="font-size: 2rem;">??</span>
+                            <div>
+                                <strong style="color: var(--black); display: block; margin-bottom: 8px; font-size: 1.1rem;">Auto-Created Applicabilities</strong>
+                                <p style="color: var(--black-light); margin: 0; line-height: 1.6;">
+                                    Default applicabilities for all divisions (Medical, Pharma, AHS, OFL) will be created automatically and marked as "Applicable". You can edit them later from the Applicabilities page.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons-row">
+                        <a href="@Url.Action("Processes", "Admin")" class="btn-modern btn-modern-secondary" style="width: auto; padding: 14px 32px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                            <span>Cancel</span>
+                        </a>
+                        <button type="submit" class="btn-modern btn-modern-primary" style="width: auto; padding: 14px 32px; background: linear-gradient(135deg, var(--blue-jay), #6a9fd4);">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                <polyline points="17 21 17 13 7 13 7 21"/>
+                                <polyline points="7 3 7 8 15 8"/>
+                            </svg>
+                            <span>Create Process</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script src="~/js/wormhole.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

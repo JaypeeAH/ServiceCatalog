@@ -1,0 +1,199 @@
+@model IEnumerable<ServiceCatalog.Web.Models.ServiceProcess>
+
+@{
+    ViewData["Title"] = "Manage Processes";
+}
+
+<section class="modern-hero-section">
+  <div class="container text-center" style="position: relative; z-index: 10;">
+        <h1 class="hero-title" style="color: white; font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; text-shadow: 0 4px 20px rgba(0,0,0,0.3);">?? Service Processes</h1>
+     <p class="hero-subtitle" style="color: rgba(255,255,255,0.95); font-size: 1.4rem; font-weight: 300;">Manage all service processes and their applicabilities</p>
+    </div>
+</section>
+
+<div class="container my-5 page-transition" style="padding-bottom: 120px;">
+    @if (TempData["Success"] != null)
+    {
+   <div class="alert alert-success alert-dismissible fade show" role="alert" style="animation: slideInRight 0.6s ease-out; border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <strong>? Success!</strong> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-5" style="animation: fadeInUp 0.6s ease-out;">
+        <div>
+      <h2 style="color: var(--black); font-weight: 700; font-size: 2rem; margin-bottom: 0.5rem;">All Processes</h2>
+      <p style="color: var(--black-light); margin: 0;">@Model.Count() total processes across all services</p>
+   </div>
+    <a href="@Url.Action("CreateProcess", "Admin")" class="btn-modern btn-modern-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+     <path d="M12 5v14M5 12h14"/>
+            </svg>
+ <span>Add New Process</span>
+   </a>
+    </div>
+
+<!-- Filter Section -->
+    <div class="filter-section" style="animation: fadeInUp 0.6s ease-out 0.2s both;">
+      <div class="row g-3">
+   <div class="col-md-4">
+                <label class="form-label-modern">?? Search by Name</label>
+   <input type="text" id="searchInput" class="form-control-modern" placeholder="Search process name...">
+</div>
+    <div class="col-md-4">
+         <label class="form-label-modern">?? Filter by Service</label>
+     <select id="serviceFilter" class="form-control-modern" style="cursor: pointer;">
+         <option value="">All Services</option>
+        @foreach (var service in Model.Select(p => p.Service).Distinct().OrderBy(s => s.Name))
+           {
+      <option value="@service.Id">@service.Name</option>
+     }
+      </select>
+      </div>
+   <div class="col-md-4">
+        <label class="form-label-modern">??? Filter by Division</label>
+       <select id="divisionFilter" class="form-control-modern" style="cursor: pointer;">
+         <option value="">All Divisions</option>
+       <option value="Medical">Medical</option>
+           <option value="Pharma">Pharma</option>
+     <option value="AHS">AHS</option>
+               <option value="OFL">OFL</option>
+            </select>
+   </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info" style="border-radius: 20px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px;">
+          <h5 style="font-weight: 700; color: var(--black); margin-bottom: 10px;">No Processes Found</h5>
+    <p style="margin: 0; color: var(--black-light);">Get started by adding your first service process.</p>
+        </div>
+    }
+    else
+    {
+    <div class="modern-table-container" style="animation: fadeInUp 0.6s ease-out 0.4s both;">
+            <table class="modern-table" id="processTable">
+  <thead>
+        <tr>
+          <th>Process Name</th>
+                <th>Service</th>
+         <th>Category</th>
+             <th style="width: 100px; text-align: center;">Order</th>
+         <th>Applicability</th>
+         <th style="width: 180px; text-align: center;">Actions</th>
+ </tr>
+         </thead>
+          <tbody>
+    @foreach (var process in Model)
+       {
+    <tr data-service-id="@process.ServiceId" data-process-name="@process.Name.ToLower()" data-divisions="@string.Join(",", process.Applicabilities?.Where(a => a.IsApplicable).Select(a => a.Division) ?? new string[0])">
+           <td><strong style="color: var(--black); font-size: 1.05rem;">@process.Name</strong></td>
+               <td>
+     <span class="badge-modern badge-modern-primary">@process.Service?.Name</span>
+           </td>
+     <td style="color: var(--black-light);">@process.Category</td>
+              <td style="text-align: center; font-weight: 700; color: var(--cardinal-red); font-size: 1.1rem;">@process.Order</td>
+       <td>
+          @if (process.Applicabilities != null && process.Applicabilities.Any())
+      {
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+     @foreach (var app in process.Applicabilities.Where(a => a.IsApplicable))
+       {
+          <span class="badge-modern badge-modern-secondary" style="font-size: 0.8rem; padding: 6px 12px;">@app.Division</span>
+            }
+     </div>
+          }
+      </td>
+         <td style="text-align: center;">
+    <div class="btn-group-modern" style="justify-content: center;">
+       <a href="@Url.Action("EditProcess", "Admin", new { id = process.Id })" class="btn-icon btn-icon-edit" title="Edit Process">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+     </svg>
+               </a>
+    <button type="button" class="btn-icon btn-icon-delete" onclick="confirmDeleteProcess(@process.Id, '@process.Name')" title="Delete Process">
+   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+     <polyline points="3 6 5 6 21 6"></polyline>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+         </svg>
+          </button>
+    </div>
+  </td>
+ </tr>
+            }
+   </tbody>
+            </table>
+   </div>
+    }
+
+    <div class="text-center mt-5" style="animation: fadeIn 0.8s ease-out 0.6s both;">
+        <a href="@Url.Action("Index", "Admin")" class="btn-back-home">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>Back to Dashboard</span>
+  </a>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+// Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', filterTable);
+    document.getElementById('serviceFilter').addEventListener('change', filterTable);
+    document.getElementById('divisionFilter').addEventListener('change', filterTable);
+
+    function filterTable() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const serviceValue = document.getElementById('serviceFilter').value;
+        const divisionValue = document.getElementById('divisionFilter').value;
+        
+      const rows = document.querySelectorAll('#processTable tbody tr');
+        
+        rows.forEach(row => {
+ const processName = row.getAttribute('data-process-name');
+            const serviceId = row.getAttribute('data-service-id');
+     const divisions = row.getAttribute('data-divisions').split(',');
+            
+  let showRow = true;
+        
+    // Search filter
+    if (searchValue && !processName.includes(searchValue)) {
+      showRow = false;
+     }
+      
+  // Service filter
+            if (serviceValue && serviceId !== serviceValue) {
+     showRow = false;
+       }
+            
+          // Division filter
+       if (divisionValue && !divisions.includes(divisionValue)) {
+        showRow = false;
+            }
+   
+     row.style.display = showRow ? '' : 'none';
+   });
+}
+
+    // Delete confirmation
+  function confirmDeleteProcess(id, name) {
+        if (confirm(`?? Are you sure you want to delete the process "${name}"?\n\nThis will also delete all associated applicabilities.\n\nThis action cannot be undone.`)) {
+            const form = document.createElement('form');
+    form.method = 'POST';
+            form.action = '@Url.Action("DeleteProcess", "Admin")/' + id;
+     
+     const token = document.createElement('input');
+        token.type = 'hidden';
+            token.name = '__RequestVerificationToken';
+   token.value = document.querySelector('input[name="__RequestVerificationToken"]').value || '@Html.AntiForgeryToken()'.match(/value="([^"]+)"/)?.[1];
+  form.appendChild(token);
+            
+   document.body.appendChild(form);
+       form.submit();
+        }
+    }
+</script>
+}
